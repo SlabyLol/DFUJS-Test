@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkFoxUtilityJS - Live Test Bench</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121214;
+            color: #e2e8f0;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        h1 {
+            color: #38bdf8;
+            border-bottom: 2px solid #27272a;
+            padding-bottom: 10px;
+        }
+        .subtitle {
+            color: #71717a;
+            font-size: 0.9rem;
+            margin-top: -10px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: #18181b;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #27272a;
+        }
+        button {
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 10px 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #0ea5e9;
+        }
+        .output-box {
+            background: #09090b;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-top: 10px;
+            color: #4ade80;
+            min-height: 20px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>DarkFoxUtilityJS Test Bench</h1>
+    <p class="subtitle">Testing Live Release v1.0.0 • Copyright (c) 2026 DarkFox Co.</p>
+
+    <div class="card">
+        <h3>1. Test FoxLog System</h3>
+        <p>This will trigger stylized outputs directly inside your Browser Developer Console (F12).</p>
+        <button id="btn-logs">Trigger Console Logs</button>
+    </div>
+
+    <div class="card">
+        <h3>2. Test Unique ID Generator</h3>
+        <p>Generates a secure crypto-styled random ID string.</p>
+        <button id="btn-id">Generate Fox ID</button>
+        <div class="output-box" id="id-output">Click the button to generate...</div>
+    </div>
+
+    <div class="card">
+        <h3>3. Test Async Sleep Helper</h3>
+        <p>Delays execution asynchronously for 1.5 seconds.</p>
+        <button id="btn-sleep">Trigger 1.5s Sleep</button>
+        <div class="output-box" id="sleep-output">Status: Ready</div>
+    </div>
+
+    <script type="module">
+        // Importing directly from your fresh GitHub Release via jsDelivr CDN
+        import { foxLog, generateFoxId, sleep } from 'https://cdn.jsdelivr.net/gh/SlabyLol/DarkFoxUtilityJS@v1.0.0/index.js';
+
+        // 1. Logs Trigger
+        document.getElementById('btn-logs').addEventListener('click', () => {
+            foxLog.success('Success log works perfectly!');
+            foxLog.info('Info log is looking sharp.');
+            foxLog.warn('Warning log triggered.');
+            foxLog.error('Error log test message.');
+            alert('Logs sent to Console! Press F12 to inspect them.');
+        });
+
+        // 2. ID Generator Trigger
+        document.getElementById('btn-id').addEventListener('click', () => {
+            const newId = generateFoxId('session');
+            document.getElementById('id-output').innerText = `Generated: ${newId}`;
+            foxLog.success(`New ID spawned: ${newId}`);
+        });
+
+        // 3. Sleep Trigger
+        document.getElementById('btn-sleep').addEventListener('click', async () => {
+            const output = document.getElementById('sleep-output');
+            const button = document.getElementById('btn-sleep');
+            
+            button.disabled = true;
+            output.style.color = '#f59e0b';
+            output.innerText = 'Sleeping... (Execution paused)';
+            foxLog.warn('Sleep helper started...');
+            
+            await sleep(1500); // 1.5 seconds delay
+            
+            output.style.color = '#4ade80';
+            output.innerText = 'Woke up! Process resumed.';
+            foxLog.success('Sleep helper finished execution.');
+            button.disabled = false;
+        });
+    </script>
+</body>
+</html>
