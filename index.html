@@ -3,122 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkFoxUtilityJS - Live Test Bench</title>
+    <title>DarkFoxUtilityJS - God Mode Test Bench</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121214;
-            color: #e2e8f0;
-            max-width: 600px;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #0c0c0e;
+            color: #f1f5f9;
+            max-width: 800px;
             margin: 40px auto;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
-        h1 {
-            color: #38bdf8;
-            border-bottom: 2px solid #27272a;
-            padding-bottom: 10px;
-        }
-        .subtitle {
-            color: #71717a;
-            font-size: 0.9rem;
-            margin-top: -10px;
-            margin-bottom: 30px;
-        }
+        h1 { color: #38bdf8; text-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .card {
-            background: #18181b;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 6px;
+            background: #141417;
+            padding: 20px;
+            border-radius: 8px;
             border: 1px solid #27272a;
         }
         button {
-            background-color: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 10px 15px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
+            background-color: #38bdf8; color: #0f172a; border: none;
+            padding: 8px 14px; font-weight: bold; border-radius: 4px;
+            cursor: pointer; transition: 0.2s;
         }
-        button:hover {
-            background-color: #0ea5e9;
+        button:hover { background-color: #0ea5e9; }
+        .output {
+            background: #09090b; padding: 10px; border-radius: 4px;
+            font-family: monospace; margin-top: 10px; color: #4ade80;
+            min-height: 24px; word-break: break-all;
         }
-        .output-box {
-            background: #09090b;
-            padding: 10px;
-            border-radius: 4px;
-            font-family: monospace;
-            margin-top: 10px;
-            color: #4ade80;
-            min-height: 20px;
-            word-break: break-all;
+        input {
+            background: #27272a; color: white; border: 1px solid #3f3f46;
+            padding: 6px; border-radius: 4px; margin-bottom: 10px; width: 80%;
         }
     </style>
 </head>
 <body>
 
-    <h1>DarkFoxUtilityJS Test Bench</h1>
-    <p class="subtitle">Testing Live Release v1.0.0 • Copyright (c) 2026 DarkFox Co.</p>
+    <h1>DarkFoxUtilityJS - Ultra Edition</h1>
+    <p style="color: #71717a;">Testing Live Release v1.1.0 • DarkFox Co.</p>
 
-    <div class="card">
-        <h3>1. Test FoxLog System</h3>
-        <p>This will trigger stylized outputs directly inside your Browser Developer Console (F12).</p>
-        <button id="btn-logs">Trigger Console Logs</button>
-    </div>
+    <div class="grid">
+        <div class="card">
+            <h3>Password Generator</h3>
+            <button id="btn-pass">Generate Secure Pass</button>
+            <div class="output" id="out-pass">-</div>
+        </div>
 
-    <div class="card">
-        <h3>2. Test Unique ID Generator</h3>
-        <p>Generates a secure crypto-styled random ID string.</p>
-        <button id="btn-id">Generate Fox ID</button>
-        <div class="output-box" id="id-output">Click the button to generate...</div>
-    </div>
+        <div class="card">
+            <h3>Array Shuffler & Unique Filter</h3>
+            <p>Input: [1, 2, 2, 3, 4, 4, 5]</p>
+            <button id="btn-arr">Process Array</button>
+            <div class="output" id="out-arr">-</div>
+        </div>
 
-    <div class="card">
-        <h3>3. Test Async Sleep Helper</h3>
-        <p>Delays execution asynchronously for 1.5 seconds.</p>
-        <button id="btn-sleep">Trigger 1.5s Sleep</button>
-        <div class="output-box" id="sleep-output">Status: Ready</div>
+        <div class="card">
+            <h3>Text Truncator & HTML Escape</h3>
+            <input type="text" id="txt-input" value="<script>alert('hack')</script> This text is way too long!">
+            <br>
+            <button id="btn-txt">Clean & Shorten</button>
+            <div class="output" id="out-txt">-</div>
+        </div>
+
+        <div class="card">
+            <h3>Math & Number Formatter</h3>
+            <button id="btn-math">Random (1-100) & Format 2.5M</button>
+            <div class="output" id="out-math">-</div>
+        </div>
     </div>
 
     <script type="module">
-        // Importing directly from your fresh GitHub Release via jsDelivr CDN
-        import { foxLog, generateFoxId, sleep } from 'https://cdn.jsdelivr.net/gh/SlabyLol/DarkFoxUtilityJS@v1.0.0/index.js';
+        // Holt den Code aus dem neuen v1.1.0 Release
+        import { 
+            generatePassword, shuffleArray, removeDuplicates, 
+            truncateText, escapeHtml, randomRange, formatNumberShort, foxLog 
+        } from 'https://cdn.jsdelivr.net/gh/SlabyLol/DarkFoxUtilityJS@v1.1.0/index.js';
 
-        // 1. Logs Trigger
-        document.getElementById('btn-logs').addEventListener('click', () => {
-            foxLog.success('Success log works perfectly!');
-            foxLog.info('Info log is looking sharp.');
-            foxLog.warn('Warning log triggered.');
-            foxLog.error('Error log test message.');
-            alert('Logs sent to Console! Press F12 to inspect them.');
+        // Password Test
+        document.getElementById('btn-pass').addEventListener('click', () => {
+            const pass = generatePassword(20);
+            document.getElementById('out-pass').innerText = pass;
+            foxLog.success(`Password built: ${pass}`);
         });
 
-        // 2. ID Generator Trigger
-        document.getElementById('btn-id').addEventListener('click', () => {
-            const newId = generateFoxId('session');
-            document.getElementById('id-output').innerText = `Generated: ${newId}`;
-            foxLog.success(`New ID spawned: ${newId}`);
+        // Array Test
+        document.getElementById('btn-arr').addEventListener('click', () => {
+            const base = [1, 2, 2, 3, 4, 4, 5];
+            const unique = removeDuplicates(base);
+            const shuffled = shuffleArray(unique);
+            document.getElementById('out-arr').innerText = `Unique & Shuffled: [${shuffled.join(', ')}]`;
         });
 
-        // 3. Sleep Trigger
-        document.getElementById('btn-sleep').addEventListener('click', async () => {
-            const output = document.getElementById('sleep-output');
-            const button = document.getElementById('btn-sleep');
-            
-            button.disabled = true;
-            output.style.color = '#f59e0b';
-            output.innerText = 'Sleeping... (Execution paused)';
-            foxLog.warn('Sleep helper started...');
-            
-            await sleep(1500); // 1.5 seconds delay
-            
-            output.style.color = '#4ade80';
-            output.innerText = 'Woke up! Process resumed.';
-            foxLog.success('Sleep helper finished execution.');
-            button.disabled = false;
+        // Text & Security Test
+        document.getElementById('btn-txt').addEventListener('click', () => {
+            const inputVal = document.getElementById('txt-input').value;
+            const safeHtml = escapeHtml(inputVal);
+            const shortText = truncateText(safeHtml, 25);
+            document.getElementById('out-txt').innerText = shortText;
+        });
+
+        // Math Test
+        document.getElementById('btn-math').addEventListener('click', () => {
+            const rand = randomRange(1, 100);
+            const formattedBig = formatNumberShort(2750000); // Should be 2.8M
+            document.getElementById('out-math').innerHTML = `Random: ${rand}<br>Formatted 2,750,000: ${formattedBig}`;
         });
     </script>
 </body>
