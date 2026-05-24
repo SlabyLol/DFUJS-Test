@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkFoxUtilityJS - Dashboard</title>
+    <title>DarkFoxUtilityJS - Remote Dashboard</title>
     <style>
         :root { --primary: #10b981; --bg: #09090b; --card: #18181b; --text: #f4f4f5; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         
-        /* Basis-Styling (Das Grid kommt jetzt dynamisch aus der index.js!) */
         .card { background: var(--card); border: 1px solid #27272a; padding: 20px; border-radius: 12px; }
         h2 { color: var(--primary); margin-top: 0; }
         
@@ -24,7 +23,7 @@
 </head>
 <body>
 
-    <h1 style="text-align:center;">DarkFoxUtilityJS <span style="color:var(--primary)">v1.3.0</span></h1>
+    <h1 style="text-align:center;">DarkFoxUtilityJS <span style="color:var(--primary)">v1.3.0 Live CDN</span></h1>
 
     <div class="smt-grid">
         <div class="card">
@@ -49,10 +48,10 @@
     </div>
 
     <script type="module">
-        // Importiert alle Module inklusive der Grid Engine
-        import { initSMTGrid, DFWebAI, generatePassword, foxLog } from './index.js';
+        // FIX: Importiert den Code jetzt direkt über das CDN aus deinem anderen Repository!
+        import { initSMTGrid, DFWebAI, generatePassword, foxLog } from 'https://cdn.jsdelivr.net/gh/SlabyLol/DarkFoxUtilityJS@v1.3.0/index.js';
 
-        // Aktiviert das SMT-Grid sofort beim Seitenstart!
+        // Aktiviert das SMT-Grid aus der Ferne
         initSMTGrid();
 
         let ai = null;
@@ -74,7 +73,7 @@
                 userInp.disabled = false;
                 sendBtn.disabled = false;
                 chatWin.innerHTML = '<div class="ai"><b>[Ecosystem]:</b> WebAI Online. I will adapt to your style!</div>';
-                foxLog.success("AI Engine Ready.");
+                foxLog.success("AI Engine Ready via Remote CDN.");
             } catch (error) {
                 foxLog.error("Failed to initialize AI: " + error.message);
                 alert("Initialization failed!");
@@ -108,7 +107,7 @@
         document.getElementById('gen-pass').addEventListener('click', () => {
             const newPassword = generatePassword(20);
             toolOut.innerText = newPassword;
-            foxLog.success("New password generated via Quick Tools.");
+            foxLog.success("New password generated.");
         });
     </script>
 </body>
