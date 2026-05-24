@@ -3,111 +3,385 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkFoxUtilityJS - Remote Dashboard</title>
+    <title>DarkFoxUtilityJS v1.5.0 - Ecosystem Sandbox</title>
     <style>
-        :root { --primary: #10b981; --bg: #09090b; --card: #18181b; --text: #f4f4f5; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        :root {
+            --bg: #09090b;
+            --card: #141417;
+            --border: #27272a;
+            --primary: #10b981;
+            --secondary: #00bcd4;
+            --text: #f4f4f5;
+            --neon-blue: #00e5ff;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px 20px;
+        }
+        /* BRANDING HEADER (Neon-Style inspired by your new logo) */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .brand-logo {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(16,185,129,0.6), 0 0 30px var(--primary);
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .brand-logo span {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0,229,255,0.6), 0 0 30px var(--neon-blue);
+        }
+        .brand-sub {
+            color: #71717a;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+        /* CARDS SETUP */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        .network-h2 { color: #f43f5e; }
+        .dom-h2 { color: #a855f7; }
+        .color-h2 { color: #eab308; }
+        .time-h2 { color: #3b82f6; }
+        .validate-h2 { color: #ec4899; }
+        .ai-h2 { color: var(--neon-blue); }
+        .sec-h2 { color: var(--primary); }
         
-        .card { background: var(--card); border: 1px solid #27272a; padding: 20px; border-radius: 12px; }
-        h2 { color: var(--primary); margin-top: 0; }
+        /* INTERFACE ELEMENTS */
+        input, button, select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #000;
+            color: #fff;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+        button {
+            background: var(--border);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        button:hover {
+            border-color: #fff;
+        }
+        .btn-run { background: #18181b; color: #fff; border: 1px solid var(--border); }
         
-        input, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #27272a; margin-bottom: 10px; box-sizing: border-box; }
-        input { background: #09090b; color: white; }
-        button { background: var(--primary); color: #064e3b; font-weight: bold; border: none; cursor: pointer; }
+        /* OUTPUT TERMINAL */
+        .console-out {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            min-height: 40px;
+            color: #a1a1aa;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
         
-        #chat-window { height: 300px; overflow-y: auto; background: #000; border-radius: 8px; padding: 15px; margin-bottom: 10px; font-size: 0.9rem; }
-        .msg { margin-bottom: 10px; padding: 8px; border-radius: 6px; }
-        .user { background: #1e3a8a; text-align: right; }
-        .ai { background: #27272a; border-left: 3px solid var(--primary); }
+        /* AI CHAT AREA */
+        #chat-win {
+            height: 180px;
+            overflow-y: auto;
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        .msg { margin-bottom: 8px; padding: 6px 10px; border-radius: 4px; }
+        .u-msg { background: #1e3a8a; text-align: right; }
+        .ai-msg { background: #27272a; border-left: 3px solid var(--neon-blue); }
     </style>
 </head>
 <body>
 
-    <h1 style="text-align:center;">DarkFoxUtilityJS <span style="color:var(--primary)">v1.4.2 Live CDN</span></h1>
+    <div class="brand-header">
+        <h1 class="brand-logo">DARKFOX <span>CO.</span></h1>
+        <div class="brand-sub">UtilityJS v1.5.0 Sandbox</div>
+    </div>
 
-    <div class="smt-grid">
+    <div class="smt-grid" id="main-sandbox">
+
         <div class="card">
-            <h2>WebAI-Label</h2>
-            <label style="font-size: 0.8rem; color: #71717a;">Enter Gemini API Key:</label>
-            <input type="password" id="api-key" placeholder="AIzaSy...">
-            <button id="init-ai">Initialize WebAI</button>
-            <hr style="border: 0.5px solid #27272a; margin: 20px 0;">
-            <h3>Quick Tools</h3>
-            <button id="gen-pass" style="background:#3f3f46; color:white;">Gen Secure Password</button>
-            <div id="tool-out" style="font-family:monospace; color:var(--primary); margin-top:10px;"></div>
+            <h2 class="network-h2">01 / network.js</h2>
+            <label>Fetch Endpoint:</label>
+            <input type="text" id="net-url" value="https://dummyjson.com/quotes/random">
+            <button class="btn-run" id="run-fetch">foxFetch() with Retries</button>
+            
+            <label style="margin-top:10px; display:block;">JSON Parser:</label>
+            <input type="text" id="net-json-string" value='{"status": "active", "crew": "DarkFox"}'>
+            <button class="btn-run" id="run-json">safeJson() Test</button>
+            <div class="console-out" id="out-network">Console Output...</div>
         </div>
 
         <div class="card">
-            <h2>Adaptive Chat</h2>
-            <div id="chat-window">
-                <div class="ai">System: Please initialize with an API Key to start chatting.</div>
+            <h2 class="dom-h2">02 / dom.js</h2>
+            <button class="btn-run" id="run-el">el() Create Dynamic Box</button>
+            <div id="dom-box-container" style="margin-bottom: 12px;"></div>
+            
+            <button class="btn-run" id="run-delegate">on() Bind Delegate Event</button>
+            <div id="delegate-zone" style="padding: 10px; background:#000; text-align:center; border-radius:6px; font-size:0.85rem;">
+                <button class="del-btn" style="width:auto; margin:0 5px;">Dynamic Target A</button>
+                <button class="del-btn" style="width:auto; margin:0 5px;">Dynamic Target B</button>
             </div>
-            <input type="text" id="user-input" placeholder="Say something..." disabled>
-            <button id="send-msg" disabled>Send Message</button>
+            <div class="console-out" id="out-dom" style="margin-top:12px;">Console Output...</div>
         </div>
+
+        <div class="card">
+            <h2 class="color-h2">03 / color.js</h2>
+            <label>Base HEX Color:</label>
+            <input type="color" id="col-input" value="#10b981" style="height:40px; padding:2px; cursor:pointer;">
+            <button class="btn-run" id="run-color-conv">Convert (HEX / RGB / HSL)</button>
+            <button class="btn-run" id="run-palette">generatePalette() & Gradient</button>
+            
+            <div id="palette-preview" style="display:flex; gap:5px; height:30px; margin-bottom:12px; border-radius:6px; overflow:hidden;"></div>
+            <div class="console-out" id="out-color">Console Output...</div>
+        </div>
+
+        <div class="card">
+            <h2 class="time-h2">04 / time.js</h2>
+            <button class="btn-run" id="run-format">formatTime()</button>
+            
+            <label>Relative Past Timestamp:</label>
+            <select id="time-past">
+                <option value="3000">3 Seconds ago</option>
+                <option value="300000">5 Minutes ago</option>
+                <option value="10800000">3 Hours ago</option>
+                <option value="172800000">2 Days ago</option>
+            </select>
+            <button class="btn-run" id="run-relative">relativeTime()</button>
+            <button class="btn-run" id="run-timer" style="background:#1d4ed8;">Benchmark Execution (FoxTimer)</button>
+            <div class="console-out" id="out-time">Console Output...</div>
+        </div>
+
+        <div class="card">
+            <h2 class="validate-h2">05 / validate.js</h2>
+            <input type="text" id="val-input" placeholder="Enter Email, URL or Password...">
+            <button class="btn-run" id="run-val-mail">isEmail()</button>
+            <button class="btn-run" id="run-val-url">isUrl()</button>
+            <button class="btn-run" id="run-val-pass" style="background:#db2777;">checkPasswordStrength()</button>
+            <div class="console-out" id="out-validate">Console Output...</div>
+        </div>
+
+        <div class="card">
+            <h2 class="sec-h2">06 / security.js & performance.js</h2>
+            <button class="btn-run" id="run-pass-gen">generatePassword(24)</button>
+            <button class="btn-run" id="run-id-gen">generateFoxId('dev')</button>
+            
+            <label style="margin-top:5px; display:block;">Anti-Flood Input (Debounced):</label>
+            <input type="text" id="perf-debounce" placeholder="Type fast here...">
+            
+            <div class="console-out" id="out-sec">Console Output...</div>
+        </div>
+
+        <div class="card" style="grid-column: span 1;">
+            <h2 class="ai-h2">07 / webai.js (Gemini 2.5 Flash)</h2>
+            <input type="password" id="ai-key" placeholder="Enter Gemini API Key (AIzaSy...)">
+            <div id="chat-win">
+                <div class="ai-msg msg">System: Please input an operational API Key to spin up the Core Brain.</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="chat-inp" placeholder="Send an adaptive command..." style="margin:0;">
+                <button id="chat-send" style="width:80px; margin:0; background:var(--neon-blue); color:#000;">Send</button>
+            </div>
+        </div>
+
     </div>
 
     <script type="module">
-        // FIX: Importiert den Code jetzt direkt über das CDN aus deinem anderen Repository!
-        import { initSMTGrid, DFWebAI, generatePassword, foxLog } from 'https://cdn.jsdelivr.net/gh/SlabyLol/DarkFoxUtilityJS@v1.4.2/index.js';
+        // HOOKING EVERYTHING FROM YOUR BARREL EXTENSION TARGET v1.5.0
+        import { 
+            // Performance
+            debounce, throttle, sleep,
+            // Security
+            generatePassword, generateFoxId, escapeHtml,
+            // Storage
+            foxStorage,
+            // Data & Math
+            shuffleArray, removeDuplicates, truncateText, deepClone, randomRange, formatNumberShort,
+            // SMT-Grid
+            initSMTGrid,
+            // WebAI
+            DFWebAI,
+            // Network
+            safeJson, foxFetch,
+            // DOM
+            $, $$, el, on,
+            // Color
+            hexToRgb, rgbToHex, rgbToHsl, generateGradient, generatePalette,
+            // Time
+            formatTime, relativeTime, FoxTimer,
+            // Validate
+            isEmail, isUrl, checkPasswordStrength,
+            // Global Logger
+            foxLog
+        } from 'https://cdn.jsdelivr.net/gh/SlabyLol/DarkFoxUtilityJS@v1.5.0/index.js';
 
-        // Aktiviert das SMT-Grid aus der Ferne
+        // --- 00 / INITIALIZE SMT GRID ENGINE ---
         initSMTGrid();
+        // Dynamically append layout configuration parameters to the sandbox container
+        $('#main-sandbox').classList.add('smt-grid');
 
-        let ai = null;
-        const chatWin = document.getElementById('chat-window');
-        const userInp = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-msg');
-        const toolOut = document.getElementById('tool-out');
-
-        // AI Initialization
-        document.getElementById('init-ai').addEventListener('click', () => {
-            const key = document.getElementById('api-key').value.trim();
-            if(!key) {
-                alert("API Key required!");
-                return;
-            }
-            
+        // --- 01 / NETWORK DISPATCH TESTING ---
+        on('#run-fetch', 'click', async () => {
+            $('#out-network').innerText = "Fetching payload remote vectors...";
             try {
-                ai = new DFWebAI(key);
-                userInp.disabled = false;
-                sendBtn.disabled = false;
-                chatWin.innerHTML = '<div class="ai"><b>[Ecosystem]:</b> WebAI Online. I will adapt to your style!</div>';
-                foxLog.success("AI Engine Ready via Remote CDN.");
-            } catch (error) {
-                foxLog.error("Failed to initialize AI: " + error.message);
-                alert("Initialization failed!");
+                const res = await foxFetch($('#net-url').value, { timeout: 4000, retries: 2 });
+                const json = await res.json();
+                $('#out-network').innerText = `Success:\n${JSON.stringify(json, null, 2)}`;
+            } catch (e) {
+                $('#out-network').innerText = `Network Matrix Error: ${e.message}`;
             }
         });
 
-        // Chat Logic
-        async function chat() {
-            const txt = userInp.value.trim(); 
-            if(!txt || !ai) return;
-            
-            userInp.value = '';
-            chatWin.innerHTML += `<div class="user">${txt}</div>`;
-            chatWin.scrollTop = chatWin.scrollHeight;
-            
-            const loading = document.createElement('div'); 
-            loading.className = 'ai'; 
-            loading.innerText = 'Thinking...';
-            chatWin.appendChild(loading);
-            chatWin.scrollTop = chatWin.scrollHeight;
-            
-            const reply = await ai.sendMessage(txt);
-            loading.innerText = reply;
-            chatWin.scrollTop = chatWin.scrollHeight;
-        }
+        on('#run-json', 'click', () => {
+            const parsed = safeJson($('#net-json-string').value);
+            $('#out-network').innerText = parsed 
+                ? `Valid Object parsed successfully:\n${JSON.stringify(parsed, null, 2)}` 
+                : "Invalid JSON String payload compiled.";
+        });
 
-        sendBtn.addEventListener('click', chat);
-        userInp.addEventListener('keypress', (e) => { if(e.key === 'Enter') chat(); });
-        
-        // Tool Logic
-        document.getElementById('gen-pass').addEventListener('click', () => {
-            const newPassword = generatePassword(20);
-            toolOut.innerText = newPassword;
-            foxLog.success("New password generated.");
+        // --- 02 / DOM SHORTS TESTING ---
+        on('#run-el', 'click', () => {
+            const freshBox = el('div', {
+                style: { background: 'var(--border)', padding: '8px', marginTop: '5px', borderRadius: '4px', borderLeft: '3px solid var(--dom-h2)' }
+            }, `Dynamic Entry Node [${randomRange(10,99)}]`);
+            $('#dom-box-container').appendChild(freshBox);
+            $('#out-dom').innerText = "Injected an el() structural node.";
+        });
+
+        on('#run-delegate', 'click', () => {
+            $('#out-dom').innerText = "Event delegation active. Click one of the Dynamic Target buttons above!";
+            on('#delegate-zone', 'click', '.del-btn', (e, target) => {
+                $('#out-dom').innerText = `Delegated click captured successfully from: "${target.innerText}"`;
+            });
+        });
+
+        // --- 03 / COLOR CONVERSION TESTING ---
+        on('#run-color-conv', 'click', () => {
+            const hex = $('#col-input').value;
+            const rgb = hexToRgb(hex);
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            $('#out-color').innerText = `HEX: ${hex}\nRGB: rgb(${rgb.r}, ${rgb.g}, ${rgb.b})\nHSL: hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+        });
+
+        on('#run-palette', 'click', () => {
+            const hex = $('#col-input').value;
+            const p = generatePalette(hex);
+            const grad = generateGradient(p.base, p.dark);
+            
+            const preview = $('#palette-preview');
+            preview.innerHTML = '';
+            preview.appendChild(el('div', { style: { background: p.base, flex: 1 } }));
+            preview.appendChild(el('div', { style: { background: p.light, flex: 1 } }));
+            preview.appendChild(el('div', { style: { background: p.dark, flex: 1 } }));
+            
+            document.body.style.backgroundImage = grad;
+            $('#out-color').innerText = `Palette Array Generated.\nCSS Gradient Line Injected:\n${grad}`;
+        });
+
+        // --- 04 / TIME ARCHITECTURE TESTING ---
+        on('#run-format', 'click', () => {
+            $('#out-time').innerText = `System Engine Clock Time: ${formatTime()}`;
+        });
+
+        on('#run-relative', 'click', () => {
+            const offset = parseInt($('#time-past').value);
+            const pastTimestamp = Date.now() - offset;
+            $('#out-time').innerText = `Calculated interval offset: ${relativeTime(pastTimestamp)}`;
+        });
+
+        on('#run-timer', 'click', async () => {
+            const clock = new FoxTimer();
+            clock.start();
+            $('#out-time').innerText = "Initiating 350ms cryptographic computational loop execution...";
+            await sleep(350);
+            const duration = clock.stop();
+            $('#out-time').innerText = `Loop finished.\nPrecise Execution Time Metric: ${duration} ms`;
+        });
+
+        // --- 05 / BOUNDARY VALIDATION TESTING ---
+        on('#run-val-mail', 'click', () => {
+            const val = $('#val-input').value;
+            $('#out-validate').innerText = `isEmail(): ${isEmail(val)}`;
+        });
+
+        on('#run-val-url', 'click', () => {
+            const val = $('#val-input').value;
+            $('#out-validate').innerText = `isUrl(): ${isUrl(val)}`;
+        });
+
+        on('#run-val-pass', 'click', () => {
+            const val = $('#val-input').value;
+            const report = checkPasswordStrength(val);
+            $('#out-validate').innerText = `Strength Report:\nStatus: ${report.msg}\nEntropy Score: ${report.score}/4\nSecure State: ${report.secure}`;
+        });
+
+        // --- 06 / SECURITY & PERFORMANCE TESTING ---
+        on('#run-pass-gen', 'click', () => {
+            $('#out-sec').innerText = `Secure Generated Key:\n${generatePassword(24)}`;
+        });
+
+        on('#run-id-gen', 'click', () => {
+            $('#out-sec').innerText = `Trackable Context ID:\n${generateFoxId('dev_run')}`;
+        });
+
+        on('#perf-debounce', 'input', debounce((e) => {
+            $('#out-sec').innerText = `Debounced execution fired! Input value: "${$('#perf-debounce').value}"`;
+        }, 500));
+
+        // --- 07 / COMPILER LAYER: WEBAI TESTING ---
+        let aiInstance = null;
+        on('#chat-send', 'click', async () => {
+            const key = $('#ai-key').value.trim();
+            const prompt = $('#chat-inp').value.trim();
+            if(!key) return alert("API Key allocation required to initialize core communication matrix.");
+            if(!prompt) return;
+
+            if(!aiInstance) {
+                aiInstance = new DFWebAI(key);
+                $('#chat-win').innerHTML = '';
+            }
+
+            $('#chat-inp').value = '';
+            $('#chat-win').innerHTML += `<div class="u-msg msg">${escapeHtml(prompt)}</div>`;
+            $('#chat-win').scrollTop = $('#chat-win').scrollHeight;
+
+            const thinkingNode = el('div', { class: 'ai-msg msg' }, "Processing matrix thoughts...");
+            $('#chat-win').appendChild(thinkingNode);
+            $('#chat-win').scrollTop = $('#chat-win').scrollHeight;
+
+            const reply = await aiInstance.sendMessage(prompt);
+            thinkingNode.innerText = reply;
+            $('#chat-win').scrollTop = $('#chat-win').scrollHeight;
         });
     </script>
 </body>
