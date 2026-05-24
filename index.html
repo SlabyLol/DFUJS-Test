@@ -8,10 +8,7 @@
         :root { --primary: #10b981; --bg: #09090b; --card: #18181b; --text: #f4f4f5; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         
-        /* SMT-GRID SYSTEM */
-        .smt-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1000px; margin: auto; }
-        @media (min-width: 768px) { .smt-grid { grid-template-columns: 1fr 1.5fr; } }
-
+        /* Basis-Styling (Das Grid kommt jetzt dynamisch aus der index.js!) */
         .card { background: var(--card); border: 1px solid #27272a; padding: 20px; border-radius: 12px; }
         h2 { color: var(--primary); margin-top: 0; }
         
@@ -19,7 +16,6 @@
         input { background: #09090b; color: white; }
         button { background: var(--primary); color: #064e3b; font-weight: bold; border: none; cursor: pointer; }
         
-        /* CHAT WINDOW */
         #chat-window { height: 300px; overflow-y: auto; background: #000; border-radius: 8px; padding: 15px; margin-bottom: 10px; font-size: 0.9rem; }
         .msg { margin-bottom: 10px; padding: 8px; border-radius: 6px; }
         .user { background: #1e3a8a; text-align: right; }
@@ -53,41 +49,66 @@
     </div>
 
     <script type="module">
-        import { DFWebAI, generatePassword, foxLog } from './index.js';
+        // Importiert alle Module inklusive der Grid Engine
+        import { initSMTGrid, DFWebAI, generatePassword, foxLog } from './index.js';
 
-        let ai;
+        // Aktiviert das SMT-Grid sofort beim Seitenstart!
+        initSMTGrid();
+
+        let ai = null;
         const chatWin = document.getElementById('chat-window');
         const userInp = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-msg');
+        const toolOut = document.getElementById('tool-out');
 
         // AI Initialization
         document.getElementById('init-ai').addEventListener('click', () => {
-            const key = document.getElementById('api-key').value;
-            if(!key) return alert("Key required!");
-            ai = new DFWebAI(key);
-            userInp.disabled = false;
-            document.getElementById('send-msg').disabled = false;
-            chatWin.innerHTML = '<div class="ai">WebAI Online. I will adapt to your style!</div>';
-            foxLog.success("AI Engine Ready.");
+            const key = document.getElementById('api-key').value.trim();
+            if(!key) {
+                alert("API Key required!");
+                return;
+            }
+            
+            try {
+                ai = new DFWebAI(key);
+                userInp.disabled = false;
+                sendBtn.disabled = false;
+                chatWin.innerHTML = '<div class="ai"><b>[Ecosystem]:</b> WebAI Online. I will adapt to your style!</div>';
+                foxLog.success("AI Engine Ready.");
+            } catch (error) {
+                foxLog.error("Failed to initialize AI: " + error.message);
+                alert("Initialization failed!");
+            }
         });
 
         // Chat Logic
         async function chat() {
-            const txt = userInp.value; if(!txt) return;
+            const txt = userInp.value.trim(); 
+            if(!txt || !ai) return;
+            
             userInp.value = '';
             chatWin.innerHTML += `<div class="user">${txt}</div>`;
-            const loading = document.createElement('div'); loading.className = 'ai'; loading.innerText = 'Thinking...';
+            chatWin.scrollTop = chatWin.scrollHeight;
+            
+            const loading = document.createElement('div'); 
+            loading.className = 'ai'; 
+            loading.innerText = 'Thinking...';
             chatWin.appendChild(loading);
+            chatWin.scrollTop = chatWin.scrollHeight;
             
             const reply = await ai.sendMessage(txt);
             loading.innerText = reply;
             chatWin.scrollTop = chatWin.scrollHeight;
         }
 
-        document.getElementById('send-msg').addEventListener('click', chat);
+        sendBtn.addEventListener('click', chat);
+        userInp.addEventListener('keypress', (e) => { if(e.key === 'Enter') chat(); });
         
         // Tool Logic
         document.getElementById('gen-pass').addEventListener('click', () => {
-            document.getElementById('tool-out').innerText = generatePassword(20);
+            const newPassword = generatePassword(20);
+            toolOut.innerText = newPassword;
+            foxLog.success("New password generated via Quick Tools.");
         });
     </script>
 </body>
